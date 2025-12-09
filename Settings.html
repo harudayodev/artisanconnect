@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles/settings.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container light-style flex-grow-1 container-p-y">
+        <h4 class="font-weight-bold py-3 mb-4">
+            Account settings
+        </h4>
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
+                    </div>  
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="account-general">
+                            <form id="settings-form" enctype="multipart/form-data">
+                                <div class="card-body media align-items-center">
+                                    <div id="profile-photo-container">
+                                        <i id="profile-icon" class="fas fa-user fa-5x"></i>
+                                    </div>                                
+                                    <div class="media-body ml-4">
+                                        <label class="btn btn-outline-primary">
+                                            Upload new photo
+                                            <input type="file" class="account-settings-fileinput" name="photo">
+                                        </label> &nbsp;
+                                        <button type="button" class="btn btn-default md-btn-flat" id="reset-photo">Reset</button>
+                                        <div class="text-light small mt-1">Allowed JPG, GIF, or PNG. Max size of 800K</div>
+                                    </div>
+                                </div>
+                                <hr class="border-light m-0">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control mb-1" name="username" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="name" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">E-mail</label>
+                                        <input type="text" class="form-control mb-1" name="email" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Bio</label>
+                                        <textarea class="form-control" rows="2" name="bio"></textarea>
+                                    </div>
+                                    <label class="form-label">Theme</label>
+                                    <button id="switch">Switch</button>
+                                </div>
+                                <hr class="border-light m-0">
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="account-change-password">
+                            <div class="card-body pb-2">
+                                <div class="form-group">
+                                    <label class="form-label">Current password</label>
+                                    <div class="input-group">
+                                        <input type="password" id="current-password" class="form-control" readonly>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('current-password')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">New password</label>
+                                    <input type="text" class="form-control" name="new_password" id="new-password">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Repeat new password</label>
+                                    <input type="text" class="form-control" name="repeat_new_password" id="repeat-password">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="account-social-links">
+                            <div class="card-body pb-2">
+                                <div class="form-group">
+                                    <label class="form-label">Twitter</label>
+                                    <input type="text" id="twitter-link" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Instagram</label>
+                                    <input type="text" id="instagram-link" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-right mt-3">
+            <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>&nbsp;
+            <button type="button" class="btn btn-default" onclick="setTimeout(function() { window.location.href='HomepageNewUser.php'; }, 1000)">Back</button>
+        </div>
+    </div>
+    <script src="switch.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+
+    window.onload = function () {
+    fetch('settings.php')
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('input[name="username"]').value = data.username;
+            document.querySelector('input[name="name"]').value = data.name; 
+            document.querySelector('input[name="email"]').value = data.email;
+
+            if (data.password) {
+                document.getElementById('current-password').value = data.password;
+            }
+            if (data.photo) {
+                setProfilePhoto(data.photo);
+            }
+        })
+        .catch(error => console.error('Error loading user data:', error));
+};
+
+function setProfilePhoto(photoPath) {
+    const container = document.getElementById('profile-photo-container');
+    container.innerHTML = `<img id="profile-photo" src="${photoPath}" alt="profile_pic" class="d-block ui-w-80">`;
+}
+
+
+    document.getElementById('photo-input').addEventListener('change', function () {
+        const file = this.files[0];
+            if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                setProfilePhoto(e.target.result); 
+            };
+            reader.readAsDataURL(file);
+            }
+    });
+
+    document.getElementById('reset-photo').addEventListener('click', function () {
+        const container = document.getElementById('profile-photo-container');
+        container.innerHTML = `<i id="profile-icon" class="fas fa-user fa-5x"></i>`;
+    });
+
+    function saveChanges() {
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value;
+    const repeatPassword = document.getElementById('repeat-password').value;
+
+    if (newPassword !== repeatPassword) {
+        alert("New password doesn't match.");
+        return;
+    }
+
+    const formData = new FormData(document.getElementById('settings-form'));
+    formData.append('current_password', currentPassword); 
+    formData.append('new_password', newPassword); 
+    formData.append('repeat_password', repeatPassword); 
+
+    fetch('settings.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(message => alert(message))
+    .catch(error => console.error('Error saving data:', error));
+}
+
+    document.getElementById('reset-photo').onclick = function() {
+        document.getElementById('profile-photo').src = "Resources/user.png";
+        const formData = new FormData();
+        formData.append('reset_photo', true);
+
+        fetch('settings.php', {
+            method: 'POST',
+            body: formData
+    })
+            .then(response => response.text())
+            .then(message => console.log(message));
+        };
+
+        function togglePassword(id) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+
+    window.onload = function () {
+        fetch('settings.php')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('current-password').value = data.password; 
+                document.getElementById('twitter-link').value = data.social_links.twitter; 
+                document.getElementById('instagram-link').value = data.social_links.instagram; 
+            })
+            .catch(error => console.error('Error loading user data:', error));
+    };
+    </script>
+</body>
+</html>
