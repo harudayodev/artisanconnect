@@ -1,0 +1,95 @@
+/* Feedback Page Styles */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('../background_feedback.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.return-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.return-button:hover {
+    background-color: #0056b3;
+}
+
+.feedback-box {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.feedback-box h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.feedback-box p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.feedback-box label {
+    font-weight: bolder;
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.feedback-box select,
+.feedback-box textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.feedback-box textarea {
+    resize: none;
+}
+
+.submit-button {
+    margin-top: 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: #218838;
+}
